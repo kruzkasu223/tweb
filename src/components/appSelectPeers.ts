@@ -38,7 +38,7 @@ import getDialogIndex from '../lib/appManagers/utils/dialogs/getDialogIndex';
 import {generateDelimiter} from './generateDelimiter';
 import SettingSection from './settingSection';
 import liteMode from '../helpers/liteMode';
-import emptySearchPlaceholder from './appSelectPeersT';
+// import emptySearchPlaceholder from './appSelectPeersT';
 import {Middleware, MiddlewareHelper, getMiddleware} from '../helpers/middleware';
 import {createSignal, Setter} from 'solid-js';
 import DialogsPlaceholder from '../helpers/dialogsPlaceholder';
@@ -801,13 +801,13 @@ export default class AppSelectPeers {
         const [hide, setHide] = createSignal(false);
         this.emptySearchPlaceholderQuerySetter = setQuery;
         this.emptySearchPlaceholderHideSetter = setHide;
-        return emptySearchPlaceholder(middleware, query, hide).then((container) => {
-          if(!middleware()) {
-            return;
-          }
+        // return emptySearchPlaceholder(middleware, query, hide).then((container) => {
+        //   if(!middleware()) {
+        //     return;
+        //   }
 
-          this.section.content.prepend(container as HTMLElement);
-        });
+        //   this.section.content.prepend(container as HTMLElement);
+        // });
       } else {
         this.dialogsPlaceholder?.detach(length);
         this.emptySearchPlaceholderHideSetter(false);

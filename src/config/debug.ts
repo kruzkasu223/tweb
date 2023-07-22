@@ -6,7 +6,7 @@
 
 import Modes from './modes';
 
-export const IS_BETA = import.meta.env.DEV;
+export const IS_BETA = Boolean(process.env.DEV);
 export const DEBUG = (IS_BETA || Modes.debug)/*  && false */;
 const ctx: any = typeof(window) !== 'undefined' ? window : self;
 export const MOUNT_CLASS_TO: any = DEBUG || true/*  && false */ ? ctx : {};

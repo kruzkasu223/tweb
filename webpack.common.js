@@ -153,7 +153,12 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js', '.tsx'],
+    fallback: {
+      fs: false,
+      path: false,
+      crypto: false
+    }
   },
 
   entry: './src/index.ts',

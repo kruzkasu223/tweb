@@ -22,11 +22,11 @@ const Modes = {
   noSharedWorker: location.search.indexOf('noSharedWorker=1') > 0
 };
 
-if(import.meta.env.VITE_MTPROTO_HAS_HTTP) {
+if(process.env.VITE_MTPROTO_HAS_HTTP) {
   Modes.http = location.search.indexOf('http=1') > 0;
 }
 
-if(import.meta.env.VITE_MTPROTO_HAS_HTTP || !import.meta.env.VITE_MTPROTO_HAS_WS) {
+if(process.env.VITE_MTPROTO_HAS_HTTP || !process.env.VITE_MTPROTO_HAS_WS) {
   Modes.http = true;
 }
 
@@ -34,7 +34,7 @@ if(Modes.http) {
   Modes.transport = 'https';
 }
 
-if(import.meta.env.VITE_MTPROTO_SW) {
+if(process.env.VITE_MTPROTO_SW) {
   Modes.asServiceWorker = true;
 }
 

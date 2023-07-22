@@ -29,7 +29,7 @@ import idleController from '../../helpers/idleController';
 import ServiceMessagePort from '../serviceWorker/serviceMessagePort';
 import deferredPromise, {CancellablePromise} from '../../helpers/cancellablePromise';
 import {makeWorkerURL} from '../../helpers/setWorkerProxy';
-import ServiceWorkerURL from '../../../sw?worker&url';
+// import ServiceWorkerURL from '../../../sw?worker&url';
 
 export type Mirrors = {
   state: State
@@ -81,7 +81,7 @@ class ApiManagerProxy extends MTProtoMessagePort {
 
     this.log('constructor');
 
-    if(!import.meta.env.VITE_MTPROTO_SW) {
+    if(!process.env.VITE_MTPROTO_SW) {
       this.registerWorker();
     }
 
@@ -245,51 +245,51 @@ class ApiManagerProxy extends MTProtoMessagePort {
   }
 
   private _registerServiceWorker() {
-    navigator.serviceWorker.register(
-      // * doesn't work
-      // new URL('../../../sw.ts', import.meta.url),
-      // '../../../sw',
-      ServiceWorkerURL,
-      {type: 'module', scope: './'}
-    ).then((registration) => {
-      this.log('SW registered', registration);
+    // navigator.serviceWorker.register(
+    //   // * doesn't work
+    //   // new URL('../../../sw.ts', import.meta.url),
+    //   // '../../../sw',
+    //   ServiceWorkerURL,
+    //   {type: 'module', scope: './'}
+    // ).then((registration) => {
+    //   this.log('SW registered', registration);
 
-      const url = new URL(window.location.href);
-      const FIX_KEY = 'swfix';
-      const swfix = +url.searchParams.get(FIX_KEY) || 0;
-      if(registration.active && !navigator.serviceWorker.controller) {
-        if(swfix >= 3) {
-          throw new Error('no controller');
-        }
+    //   const url = new URL(window.location.href);
+    //   const FIX_KEY = 'swfix';
+    //   const swfix = +url.searchParams.get(FIX_KEY) || 0;
+    //   if(registration.active && !navigator.serviceWorker.controller) {
+    //     if(swfix >= 3) {
+    //       throw new Error('no controller');
+    //     }
 
-        // ! doubtful fix for hard refresh
-        return registration.unregister().then(() => {
-          url.searchParams.set(FIX_KEY, '' + (swfix + 1));
-          window.location.href = url.toString();
-        });
-      }
+    //     // ! doubtful fix for hard refresh
+    //     return registration.unregister().then(() => {
+    //       url.searchParams.set(FIX_KEY, '' + (swfix + 1));
+    //       window.location.href = url.toString();
+    //     });
+    //   }
 
-      if(swfix) {
-        url.searchParams.delete(FIX_KEY);
-        history.pushState(undefined, '', url);
-      }
+    //   if(swfix) {
+    //     url.searchParams.delete(FIX_KEY);
+    //     history.pushState(undefined, '', url);
+    //   }
 
-      const sw = registration.installing || registration.waiting || registration.active;
-      sw.addEventListener('statechange', (e) => {
-        this.log('SW statechange', e);
-      });
+    //   const sw = registration.installing || registration.waiting || registration.active;
+    //   sw.addEventListener('statechange', (e) => {
+    //     this.log('SW statechange', e);
+    //   });
 
-      const controller = navigator.serviceWorker.controller || registration.installing || registration.waiting || registration.active;
-      this.attachServiceWorker(controller);
+    //   const controller = navigator.serviceWorker.controller || registration.installing || registration.waiting || registration.active;
+    //   this.attachServiceWorker(controller);
 
-      if(import.meta.env.VITE_MTPROTO_SW) {
-        this.onWorkerFirstMessage(controller);
-      }
-    }).catch((err) => {
-      this.log.error('SW registration failed!', err);
+    //   if(import.meta.env.VITE_MTPROTO_SW) {
+    //     this.onWorkerFirstMessage(controller);
+    //   }
+    // }).catch((err) => {
+    //   this.log.error('SW registration failed!', err);
 
-      this.invokeVoid('serviceWorkerOnline', false);
-    });
+    //   this.invokeVoid('serviceWorkerOnline', false);
+    // });
   }
 
   private registerServiceWorker() {
@@ -320,7 +320,7 @@ class ApiManagerProxy extends MTProtoMessagePort {
       });
     });
 
-    if(import.meta.env.VITE_MTPROTO_SW) {
+    if(process.env.VITE_MTPROTO_SW) {
       this.attachListenPort(worker);
     } else {
       this.serviceMessagePort.attachListenPort(worker);
@@ -410,7 +410,7 @@ class ApiManagerProxy extends MTProtoMessagePort {
   }
 
   private registerWorker() {
-    if(import.meta.env.VITE_MTPROTO_SW) {
+    if(process.env.VITE_MTPROTO_SW) {
       return;
     }
 
@@ -443,7 +443,7 @@ class ApiManagerProxy extends MTProtoMessagePort {
     this.log('set webWorker');
 
     // this.worker = worker;
-    if(import.meta.env.VITE_MTPROTO_SW) {
+    if(process.env.VITE_MTPROTO_SW) {
       this.attachSendPort(worker);
     } else {
       this.attachWorkerToPort(worker, this, 'mtproto');
